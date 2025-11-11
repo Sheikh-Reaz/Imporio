@@ -14,7 +14,7 @@ const Navbar = () => {
   };
   const Links = (
     <>
-<ul>
+
         <li>
         <NavLink className={"text-xl text-color "} to={"/"}>
           Home
@@ -47,7 +47,7 @@ const Navbar = () => {
     </NavLink>
   </li>
 )}
-</ul>
+
       
     </>
   );
