@@ -7,6 +7,7 @@ const AllProduct = () => {
   const axiosInstance = useAxios();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState(""); // <-- new state for search
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -22,16 +23,33 @@ const AllProduct = () => {
     fetchProducts();
   }, [axiosInstance]);
 
+  // Filter products based on search query
+  const filteredProducts = products.filter((product) =>
+    product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="max-w-7xl mx-auto md:p-4">
       <h1>Our All Products</h1>
+
+      {/* Search Input */}
+      <div className="my-4">
+        <input
+          type="text"
+          placeholder="Search products..."
+          className="border p-2 rounded w-full md:w-1/2"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
       {loading ? (
         <div className="flex justify-center items-center h-40">
           <span className="loading loading-spinner text-primary"></span>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6 p-4">
-          {products.map((product) => {
+          {filteredProducts.map((product) => {
             const discountPercent =
               product.price && product.discount_price
                 ? Math.round(
@@ -95,6 +113,12 @@ const AllProduct = () => {
               </div>
             );
           })}
+
+          {filteredProducts.length === 0 && !loading && (
+            <p className="col-span-full text-center text-gray-500 mt-10">
+              No products found.
+            </p>
+          )}
         </div>
       )}
     </div>

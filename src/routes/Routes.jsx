@@ -8,7 +8,6 @@ import ProductDetails from "../components/pages/ProductDetails/ProductDetails";
 import Login from "../components/pages/Login/Login";
 import Register from "../components/pages/Register/Register";
 import Profile from "../components/pages/Profile/Profile";
-import Export from "../components/pages/Export/Export";
 import PrivateRoute from "../routes/PrivateRoute";
 import { axiosInstance } from "../hooks/useAxios";
 
@@ -39,10 +38,7 @@ const router = createBrowserRouter([
         path: "myImport",
         element: <PrivateRoute><MyImport /></PrivateRoute>,
       },
-      {
-        path: "export",
-        element: <PrivateRoute><Export/></PrivateRoute>,
-      },
+
       {
         path: "login",
         element: <Login />, 
