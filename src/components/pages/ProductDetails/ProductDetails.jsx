@@ -4,6 +4,7 @@ import useAxios from "../../../hooks/useAxios";
 import { FaStar } from "react-icons/fa";
 import { use } from "react";
 import { AuthContext } from "../../../provider/AuthProvider";
+import { Helmet } from "react-helmet-async";
 
 const ProductDetails = () => {
   const axiosInstance = useAxios();
@@ -43,7 +44,7 @@ const ProductDetails = () => {
         product_name: product.product_name,
         product_image: product.product_image,
         price: product.price,
-        discount_price:product.discount_price,
+        discount_price: product.discount_price,
         origin_country: product.origin_country,
         rating: product.rating,
         imported_quantity: importQty,
@@ -63,6 +64,9 @@ const ProductDetails = () => {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
+      <Helmet>
+        <title>Product Details</title>
+      </Helmet>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-base-100 shadow-xl rounded-2xl p-6">
         {/* Image */}
         <div className="flex items-center justify-center">

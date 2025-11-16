@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import useAxios from "../../../hooks/useAxios";
 import { AuthContext } from "../../../provider/AuthProvider";
+import { Helmet } from "react-helmet-async";
 
 const ExportProduct = () => {
    const { user } = useContext(AuthContext);
@@ -49,6 +50,9 @@ const ExportProduct = () => {
 
   return (
     <div className="max-w-xl mx-auto p-4">
+                            <Helmet>
+                  <title>Export</title>
+                </Helmet>
       <h2 className="text-2xl font-bold mb-4">Add Export Product</h2>
       <form onSubmit={handleSubmit} className="space-y-3">
         <input

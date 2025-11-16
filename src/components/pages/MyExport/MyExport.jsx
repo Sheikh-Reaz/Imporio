@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import useAxios from "../../../hooks/useAxios";
 import { AuthContext } from "../../../provider/AuthProvider";
+import { Helmet } from "react-helmet-async";
 
 const MyExport = () => {
  const { user } = useContext(AuthContext);
@@ -16,7 +17,7 @@ const MyExport = () => {
 
   useEffect(() => {
     fetchExports();
-  }, [user]);
+  });
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this product?")) return;
@@ -44,6 +45,9 @@ const MyExport = () => {
 
   return (
 <div className="max-w-7xl mx-auto md:p-4" >
+                        <Helmet>
+                  <title>My Exports</title>
+                </Helmet>
         <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {exports.map((product) => (
         <div key={product._id} className="card bg-base-100 shadow-xl p-4">

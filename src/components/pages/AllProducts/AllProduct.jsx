@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import useAxios from "../../../hooks/useAxios";
 import { FaStar } from "react-icons/fa";
 import { Link } from "react-router";
+import { Helmet } from "react-helmet-async";
 
 const AllProduct = () => {
   const axiosInstance = useAxios();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); // <-- new state for search
+  const [searchQuery, setSearchQuery] = useState(""); 
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,21 +24,25 @@ const AllProduct = () => {
     fetchProducts();
   }, [axiosInstance]);
 
-  // Filter products based on search query
+
   const filteredProducts = products.filter((product) =>
     product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
+
     <div className="max-w-7xl mx-auto md:p-4">
-      <h1>Our All Products</h1>
+                <Helmet>
+            <title>All Products</title>
+          </Helmet>
+      <h1 h1 className="font-philosopher text-center py-15 text-color pl-4 md:pl-2 text-4xl font-semibold" >Our All Products</h1>
 
       {/* Search Input */}
-      <div className="my-4">
+      <div className="my-4 text-right">
         <input
           type="text"
           placeholder="Search products..."
-          className="border p-2 rounded w-full md:w-1/2"
+          className="border p-2 rounded  md:w-1/2"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />

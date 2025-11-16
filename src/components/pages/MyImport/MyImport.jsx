@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import useAxios from "../../../hooks/useAxios";
 import { AuthContext } from "../../../provider/AuthProvider";
 import { FaStar } from "react-icons/fa";
+import { Helmet } from "react-helmet-async";
 
 const MyImport = () => {
   const axiosInstance = useAxios();
@@ -21,7 +22,7 @@ const MyImport = () => {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, [user, authLoading]);
+  }, [user, authLoading,axiosInstance]);
 
   // Delete from DB + UI
   const handleRemove = (id) => {
@@ -40,6 +41,9 @@ const MyImport = () => {
 
   return (
     <div className="max-w-7xl mx-auto md:p-4" >
+                      <Helmet>
+                  <title>My Imports</title>
+                </Helmet>
                 <div className="pt-16 px-4">
       <h1 className="text-center text-2xl text-color font-bold mb-6">
         My Imports

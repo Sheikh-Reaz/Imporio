@@ -4,6 +4,7 @@ import { IoEyeOff } from "react-icons/io5";
 import { Link, useNavigate, useLocation } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import { AuthContext } from "../../../provider/AuthProvider";
+import { Helmet } from "react-helmet-async";
 
 
 const Login = () => {
@@ -66,12 +67,11 @@ const email = emailRef.current.value;
 
   return (
 <div className="text-color" >
+                        <Helmet>
+                  <title>Login</title>
+                </Helmet>
         <div className="min-h-[calc(100vh-20px)] flex items-center justify-center  relative overflow-hidden">
-      {/* Animated glow orbs */}
-      {/* <div className="absolute inset-0">
-        <div className="absolute w-72 h-72 bg-purple-400/30 rounded-full blur-xl top-10 left-10 animate-pulse"></div>
-        <div className="absolute w-72 h-72 bg-blue-400/30 rounded-full blur-xl bottom-10 right-10 animate-pulse"></div>
-      </div> */}
+
 
       <div className="container mx-auto">
         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 p-6 lg:p-10 ">
@@ -107,7 +107,7 @@ const email = emailRef.current.value;
               <div className="relative">
                 <label className="block text-sm mb-1">Password</label>
                 <input
-                  type={show ? "taxt" : "password"}
+                  type={show ? "text" : "password"}
                   name="password"
                   placeholder="••••••••"
                   className="input input-bordered w-full text-color   focus:outline-none focus:ring-2 focus:ring-blue-400"
