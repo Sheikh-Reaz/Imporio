@@ -10,11 +10,9 @@ const ProductDetails = () => {
   const axiosInstance = useAxios();
   const product = useLoaderData();
   const { user } = use(AuthContext);
-  console.log(user.email);
 
   const [showModal, setShowModal] = useState(false);
   const [importQty, setImportQty] = useState("");
-
   const [currentQty, setCurrentQty] = useState(product.available_quantity);
 
   const {
@@ -27,20 +25,21 @@ const ProductDetails = () => {
   } = product || {};
 
   const available_quantity = currentQty;
-
   const isInvalidQty = importQty > available_quantity || importQty <= 0;
 
   const handleImport = async () => {
     const previousQty = currentQty;
-
     setCurrentQty(currentQty - importQty);
 
     try {
+      // Update product quantity in Products collection
       await axiosInstance.patch(`/products/${product._id}`, {
         available_quantity: previousQty - importQty,
       });
 
+      // Add import to MyImport collection
       await axiosInstance.post("/myImport", {
+        product_id: product._id, // <-- Added this field
         product_name: product.product_name,
         product_image: product.product_image,
         price: product.price,
@@ -48,6 +47,7 @@ const ProductDetails = () => {
         origin_country: product.origin_country,
         rating: product.rating,
         imported_quantity: importQty,
+        product_description: product_description,
         createdAt: new Date(),
         user_email: user.email,
       });
@@ -55,9 +55,7 @@ const ProductDetails = () => {
       alert("Successfully imported!");
     } catch (error) {
       console.error("Failed:", error);
-
       setCurrentQty(previousQty);
-
       alert("Something went wrong. Try again!");
     }
   };
@@ -84,11 +82,11 @@ const ProductDetails = () => {
             <p className="">{product_description}</p>
             <div className="space-y-2 text-lg">
               <p>
-                <span className="font-semibold   ">Price:</span> ${" "}
+                <span className="font-semibold">Price:</span> ${" "}
                 <span className="line-through">{price}</span>
               </p>
               <p>
-                <span className="font-semibold">Discounted Price:</span> $
+                <span className="font-semibold">Discounted Price:</span>{" "}
                 {discount_price}
               </p>
               <p>
