@@ -1,16 +1,11 @@
-// src/components/Slider.jsx
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
-
-// import your local images (recommended for bundlers)
 import controllerImg from "../../../assets/controller.png";
 import pixelImg from "../../../assets/pixel7.png";
 import headsetImg from "../../../assets/headset.png";
-import headsetSmall from "../../../assets/controller.png";
-import cameraSmall from "../../../assets/controller.png";
 
 const Slider = () => {
   return (
@@ -27,7 +22,6 @@ const Slider = () => {
             autoplay={{ delay: 3500, disableOnInteraction: false }}
             className="w-full rounded-2xl"
           >
-            {/* Swiper container wrapper: control height here */}
             <div className="h-64 md:h-[500px]">
               {/* Slide 1 */}
               <SwiperSlide>
@@ -66,67 +60,73 @@ const Slider = () => {
         </div>
 
         {/* RIGHT: Static product/cards (outside Swiper) */}
-        <div className="grid md:col-span-2  grid-rows-2   gap-4">
+        <div className="grid md:col-span-2 grid-rows-2 gap-4">
           {/* Aurora Headset */}
-          <div className="bg-pink-100 p-6 rounded-2xl flex flex-col justify-between">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-800">
-                Aurora Headset
-              </h3>
-              <div className="flex gap-3 mt-3 text-center">
-                <div className="bg-white rounded-lg p-2 text-sm font-semibold">
-                  52<br />Days
-                </div>
-                <div className="bg-white rounded-lg p-2 text-sm font-semibold">
-                  11<br />Hr
-                </div>
-                <div className="bg-white rounded-lg p-2 text-sm font-semibold">
-                  38<br />Min
-                </div>
-                <div className="bg-white rounded-lg p-2 text-sm font-semibold">
-                  16<br />Sc
-                </div>
+          <div className="relative rounded-2xl overflow-hidden h-full">
+            <div
+              className="absolute inset-0 bg-cover bg-center"
+              style={{
+                backgroundImage:
+                  "url('https://woodmart.xtemos.com/mega-electronics/wp-content/uploads/sites/9/2023/02/logitech-aurora-headset.jpg.webp')",
+              }}
+            ></div>
+            {/* Overlay */}
+            <div className="absolute inset-0  bg-opacity-40"></div>
+            {/* Content */}
+            <div className="relative p-6 flex flex-col justify-between h-full text-white">
+              <div>
+                <h3 className="text-xl font-semibold">Aurora Headset</h3>
+                <p className="text-m font-semibold">Discount is running out  </p>
               </div>
-            </div>
-            <div className="mt-4 flex justify-between items-center">
-              <button className="btn btn-primary btn-sm">Buy Now</button>
-              <img
-                src={headsetSmall}
-                alt="Aurora Headset"
-                className="w-24 md:w-28 object-contain"
-              />
+              <div className="mt-4 flex justify-between items-center">
+                <button className="btn btn-primary btn-sm">Buy Now</button>
+              </div>
             </div>
           </div>
 
           {/* Dual Sense + Instant Camera */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-blue-100 p-4 rounded-2xl flex flex-col justify-between">
-              <div>
-                <h4 className="font-semibold">New Dual Sense</h4>
-                <p className="text-sm text-gray-600">For PlayStation 5</p>
-              </div>
-              <div className="flex justify-between items-center mt-3">
-                <button className="btn btn-sm btn-outline">View Details</button>
-                <img
-                  src={controllerImg}
-                  alt="Dual Sense"
-                  className="w-16 md:w-20 object-contain"
-                />
+            <div className="relative rounded-2xl overflow-hidden h-full">
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage:
+                    "url('https://woodmart.xtemos.com/furniture2/wp-content/uploads/sites/11/2023/04/about-brand-3.jpg')",
+                }}
+              ></div>
+              <div className="absolute inset-0  bg-opacity-40"></div>
+              <div className="relative p-4 flex flex-col justify-between h-full text-white">
+                <div>
+                  <h4 className="font-semibold">New Dual Sense</h4>
+                 
+                </div>
+                <div className="flex justify-between items-center mt-3">
+                  <button className="btn btn-sm btn-outline border-white text-white">
+                    View Details
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="bg-yellow-100 p-4 rounded-2xl flex flex-col justify-between">
-              <div>
-                <h4 className="font-semibold">Instant Cameras</h4>
-                <p className="text-sm text-gray-600">Get photo paper as a gift</p>
-              </div>
-              <div className="flex justify-between items-center mt-3">
-                <button className="btn btn-sm btn-outline">View Details</button>
-                <img
-                  src={cameraSmall}
-                  alt="Instant Camera"
-                  className="w-16 md:w-20 object-contain"
-                />
+            <div className="relative rounded-2xl overflow-hidden h-full">
+              <div
+                className="absolute inset-0 bg-cover bg-center"
+                style={{
+                  backgroundImage:
+                    "url('https://woodmart.xtemos.com/makeup/wp-content/uploads/sites/22/2024/10/c2-prd-tp-4-290x202.jpg')",
+                }}
+              ></div>
+              <div className="absolute inset-0 bg-opacity-40"></div>
+              <div className="relative p-4 flex flex-col justify-between h-full text-white">
+                <div>
+                  <h4 className="font-semibold">Instant Glow</h4>
+                  <p className="text-sm">Get photo paper as a gift</p>
+                </div>
+                <div className="flex justify-between items-center mt-3">
+                  <button className="btn btn-sm btn-outline border-white text-white">
+                    View Details
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -135,6 +135,5 @@ const Slider = () => {
     </div>
   );
 };
-
 
 export default Slider;
