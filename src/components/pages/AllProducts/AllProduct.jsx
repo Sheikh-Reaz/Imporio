@@ -1,130 +1,188 @@
-import React, { useEffect, useState } from "react";
-import useAxios from "../../../hooks/useAxios";
-import { FaStar } from "react-icons/fa";
+import { useSearchParams } from "react-router";
 import { Link } from "react-router";
 import { Helmet } from "react-helmet-async";
+import useProducts from "../../../hooks/useProducts";
+import { useState } from "react";
+import ProductCard from "../../ProductCard";
 
 const AllProduct = () => {
-  const axiosInstance = useAxios();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(""); 
+  const [searchParams] = useSearchParams();
+  const category = searchParams.get("category");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("latest");
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axiosInstance.get("/allProducts");
-        setProducts(response.data);
-      } catch (err) {
-        console.error("Error fetching latest products:", err);
-      } finally {
-        setLoading(false);
+  const { data: products = [], isLoading } = useProducts(category);
+
+  const filteredProducts = products
+    .filter((product) =>
+      product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "price-low":
+          return (a.discount_price || a.price) - (b.discount_price || b.price);
+        case "price-high":
+          return (b.discount_price || b.price) - (a.discount_price || a.price);
+        case "rating":
+          return (b.rating || 0) - (a.rating || 0);
+        case "latest":
+        default:
+          return 0;
       }
-    };
-    fetchProducts();
-  }, [axiosInstance]);
+    });
 
-
-  const filteredProducts = products.filter((product) =>
-    product.product_name.toLowerCase().includes(searchQuery.toLowerCase())
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedProducts = filteredProducts.slice(
+    startIndex,
+    startIndex + itemsPerPage
   );
 
+  // Reset to page 1 when filters change
+  const handleFilterChange = () => {
+    setCurrentPage(1);
+  };
+
   return (
-
     <div className="max-w-7xl mx-auto md:p-4 min-h-screen">
-                <Helmet>
-            <title>All Products</title>
-          </Helmet>
-      <h1 h1 className="font-philosopher text-center py-15 text-color pl-4 md:pl-2 text-4xl font-semibold" >Our All Products</h1>
+      <Helmet>
+        <title>
+          {category ? `${category} products` : "All Products"}
+        </title>
+      </Helmet>
 
-      {/* Search Input */}
-      <div className="my-4 text-right">
-        <input
-          type="text"
-          placeholder="Search products..."
-          className="border p-2 rounded  md:w-1/2"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
+      <h1 className="text-center py-8 text-5xl font-semibold capitalize">
+        {category ? `${category} products` : "Our All Products"}
+      </h1>
+
+      {/* Search and Sort Controls */}
+      <div className="my-8 px-4 md:px-0">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          {/* Search Input */}
+          <div className="w-full md:w-2/5">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="w-full border-2 border-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                handleFilterChange();
+              }}
+            />
+          </div>
+
+          {/* Sort Dropdown */}
+          <div className="w-full md:w-1/4">
+            <select
+              value={sortBy}
+              onChange={(e) => {
+                setSortBy(e.target.value);
+                handleFilterChange();
+              }}
+              className="w-full border-2 border-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 transition-colors bg-white cursor-pointer"
+            >
+              <option value="latest">Latest Products</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Highest Rated</option>
+            </select>
+          </div>
+
+          {/* Show Items Per Page */}
+          <div className="w-full md:w-1/4 flex items-center gap-2">
+            <span className="font-semibold text-gray-700">Show:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="flex-1 border-2 border-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:border-blue-500 transition-colors bg-white cursor-pointer"
+            >
+              <option value={6}>6</option>
+              <option value={8}>8</option>
+              <option value={9}>9</option>
+              <option value={12}>12</option>
+              <option value={18}>18</option>
+              <option value={24}>24</option>
+            </select>
+          </div>
+        </div>
       </div>
 
-      {loading ? (
+      {isLoading ? (
         <div className="flex justify-center items-center h-40">
           <span className="loading loading-spinner text-primary"></span>
         </div>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-6 p-4">
-          {filteredProducts.map((product) => {
-            const discountPercent =
-              product.price && product.discount_price
-                ? Math.round(
-                    ((product.price - product.discount_price) / product.price) *
-                      100
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-0">
+            {paginatedProducts.map((product) => (
+              <ProductCard key={product._id} product={product} />
+            ))}
+
+            {paginatedProducts.length === 0 && (
+              <p className="col-span-full text-center text-gray-500 py-8">
+                No products found.
+              </p>
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          {filteredProducts.length > 0 && (
+            <div className="flex items-center justify-center gap-2 mt-12 pb-8 flex-wrap">
+              {/* Previous Button */}
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="px-4 py-2 border-2 border-gray-200 rounded-lg font-semibold text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                ← Previous
+              </button>
+
+              {/* Page Numbers */}
+              <div className="flex gap-1 flex-wrap justify-center">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-3 py-2 rounded-lg font-semibold transition-colors ${
+                        currentPage === page
+                          ? "bg-blue-600 text-white"
+                          : "border-2 border-gray-200 text-gray-700 hover:bg-gray-100"
+                      }`}
+                    >
+                      {page}
+                    </button>
                   )
-                : 0;
-
-            return (
-              <div key={product._id} className="relative">
-                {/* Discount Badge */}
-                <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded z-10">
-                  -{discountPercent}%
-                </div>
-
-                <div className="card bg-base-100 shadow-sm">
-                  {/* Product Image */}
-                  <figure>
-                    <img
-                      src={product.product_image}
-                      alt={product.product_name}
-                      className="w-full h-90 object-cover"
-                    />
-                  </figure>
-
-                  <div className="card-body">
-                    {/* Product Name */}
-                    <h2 className="card-title">{product.product_name}</h2>
-
-                    {/* Rating and Origin */}
-                    <div className="flex items-center justify-between my-2">
-                      <div className="flex items-center gap-1 text-yellow-400 font-semibold">
-                        <FaStar />
-                        <span className="text-gray-700">{product.rating}</span>
-                      </div>
-                      <div className="text-gray-500">
-                        <span className="font-semibold">Origin:</span>{" "}
-                        {product.origin_country}
-                      </div>
-                    </div>
-
-                    {/* Pricing */}
-                    <div className="flex items-center gap-3 my-2">
-                      <span className="text-gray-400 line-through">
-                        ${product.price}
-                      </span>
-                      <span className="text-blue-600 font-bold">
-                        ${product.discount_price}
-                      </span>
-                    </div>
-                    <div className="card-actions">
-                      <Link
-                        to={`/productDetails/${product._id}`}
-                        className="btn btn-primary w-full"
-                      >
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                )}
               </div>
-            );
-          })}
 
-          {filteredProducts.length === 0 && !loading && (
-            <p className="col-span-full text-center text-gray-500 mt-10">
-              No products found.
-            </p>
+              {/* Next Button */}
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
+                disabled={currentPage === totalPages}
+                className="px-4 py-2 border-2 border-gray-200 rounded-lg font-semibold text-gray-700 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next →
+              </button>
+            </div>
           )}
-        </div>
+
+          {/* Showing Info */}
+          {filteredProducts.length > 0 && (
+            <div className="text-center pb-8 text-gray-600 text-sm">
+              Showing {startIndex + 1} to {Math.min(startIndex + itemsPerPage, filteredProducts.length)} of {filteredProducts.length} products
+            </div>
+          )}
+        </>
       )}
     </div>
   );

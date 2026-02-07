@@ -8,6 +8,8 @@ import ProductDetails from "../components/pages/ProductDetails/ProductDetails";
 import Login from "../components/pages/Login/Login";
 import Register from "../components/pages/Register/Register";
 import Profile from "../components/pages/Profile/Profile";
+import Contact  from "../components/pages/Contact/Contact";
+import Delivery  from "../components/pages/Delivery/Delivery";
 import PrivateRoute from "../routes/PrivateRoute";
 import { axiosInstance } from "../hooks/useAxios";
 
@@ -23,20 +25,20 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "allProducts",
+        path: "products",
         element: <AllProduct />,
       },
       {
         path: "export",
-        element: <PrivateRoute><ExportProduct /></PrivateRoute>,
+        element: <ExportProduct />,
       },
       {
         path: "myExport",
-        element: <PrivateRoute><MyExport /></PrivateRoute>,
+        element: <MyExport />,
       },
       {
         path: "myImport",
-        element: <PrivateRoute><MyImport /></PrivateRoute>,
+        element: <MyImport />,
       },
 
       {
@@ -49,12 +51,20 @@ const router = createBrowserRouter([
       },
       {
         path: "profile",
-        element:  <PrivateRoute><Profile /> </PrivateRoute> ,
+        element:<Profile />  ,
+      },
+      {
+        path: "contacts",
+        element:<Contact/>  ,
+      },
+      {
+        path: "delivery-return",
+        element:<Delivery/>  ,
       },
       {
         path: 'productDetails/:id' ,
         
-        element:  <PrivateRoute> <ProductDetails/> </PrivateRoute> ,
+        element:   <ProductDetails/>  ,
         loader: async ({ params }) => {
      
       const res = await axiosInstance.get(`/productDetails/${params.id}`);

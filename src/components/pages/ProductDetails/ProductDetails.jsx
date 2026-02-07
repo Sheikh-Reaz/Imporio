@@ -1,15 +1,18 @@
-import React, { useState } from "react";
-import { useLoaderData } from "react-router";
+import React, { useState, use } from "react";
+import { useLoaderData, useNavigate, useLocation } from "react-router";
 import useAxios from "../../../hooks/useAxios";
 import { FaStar } from "react-icons/fa";
-import { use } from "react";
 import { AuthContext } from "../../../provider/AuthProvider";
 import { Helmet } from "react-helmet-async";
+import { toast } from "react-toastify";
 
 const ProductDetails = () => {
   const axiosInstance = useAxios();
   const product = useLoaderData();
   const { user } = use(AuthContext);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [showModal, setShowModal] = useState(false);
   const [importQty, setImportQty] = useState("");
@@ -32,14 +35,12 @@ const ProductDetails = () => {
     setCurrentQty(currentQty - importQty);
 
     try {
-      // Update product quantity in Products collection
       await axiosInstance.patch(`/products/${product._id}`, {
         available_quantity: previousQty - importQty,
       });
 
-      // Add import to MyImport collection
       await axiosInstance.post("/myImport", {
-        product_id: product._id, // <-- Added this field
+        product_id: product._id,
         product_name: product.product_name,
         product_image: product.product_image,
         price: product.price,
@@ -52,12 +53,22 @@ const ProductDetails = () => {
         user_email: user.email,
       });
 
-      alert("Successfully imported!");
+      toast.success("Successfully imported!");
     } catch (error) {
       console.error("Failed:", error);
       setCurrentQty(previousQty);
-      alert("Something went wrong. Try again!");
+      toast.error("Something went wrong. Try again!");
     }
+  };
+
+  // 🔐 Import button handler (LOGIN CHECK)
+  const handleImportClick = () => {
+    if (!user) {
+      toast.error("Please login to import products");
+      navigate("/login", { state: { from: location } });
+      return;
+    }
+    setShowModal(true);
   };
 
   return (
@@ -65,6 +76,7 @@ const ProductDetails = () => {
       <Helmet>
         <title>Product Details</title>
       </Helmet>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-base-100 shadow-xl rounded-2xl p-6">
         {/* Image */}
         <div className="flex items-center justify-center">
@@ -79,23 +91,26 @@ const ProductDetails = () => {
         <div className="flex flex-col justify-between space-y-5">
           <div>
             <h1 className="text-3xl font-bold mb-3">{product_name}</h1>
-            <p className="">{product_description}</p>
+            <p>{product_description}</p>
+
             <div className="space-y-2 text-lg">
               <p>
-                <span className="font-semibold">Price:</span> ${" "}
-                <span className="line-through">{price}</span>
+                <span className="font-semibold">Price:</span>{" "}
+                <span className="line-through">${price}</span>
               </p>
+
               <p>
                 <span className="font-semibold">Discounted Price:</span>{" "}
-                {discount_price}
+                ${discount_price}
               </p>
+
               <p>
                 <span className="font-semibold">Country of Origin:</span>{" "}
                 {origin_country}
               </p>
 
               <div className="flex items-center gap-1 text-yellow-400 font-semibold">
-                <p className="text-color">Rating</p>
+                <span className="text-gray-700">Rating</span>
                 <FaStar />
                 <span className="text-gray-700">{product.rating}</span>
               </div>
@@ -107,11 +122,11 @@ const ProductDetails = () => {
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* Button */}
           <div className="flex gap-4">
             <button
               className="btn btn-primary"
-              onClick={() => setShowModal(true)}
+              onClick={handleImportClick}
             >
               Import Now
             </button>
@@ -126,6 +141,7 @@ const ProductDetails = () => {
             <h2 className="text-xl font-bold mb-3 text-center">
               Import Product
             </h2>
+
             <p className="text-sm mb-4 text-gray-500 text-center">
               Enter the quantity you want to import (max: {available_quantity})
             </p>
@@ -147,6 +163,7 @@ const ProductDetails = () => {
               >
                 Cancel
               </button>
+
               <button
                 className="btn btn-accent"
                 disabled={isInvalidQty}

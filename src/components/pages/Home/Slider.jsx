@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import controllerImg from "../../../assets/controller.png";
 import pixelImg from "../../../assets/pixel7.png";
 import headsetImg from "../../../assets/headset.png";
+import { NavLink } from "react-router";
 
 const Slider = () => {
   return (
@@ -79,7 +80,7 @@ const Slider = () => {
                 <p className="text-m font-semibold">Discount is running out  </p>
               </div>
               <div className="mt-4 flex justify-between items-center">
-                <button className="btn btn-primary btn-sm">Buy Now</button>
+                <NavLink to={"/products?category=accessories"} className="btn btn-primary btn-sm">Buy Now</NavLink>
               </div>
             </div>
           </div>
@@ -101,9 +102,9 @@ const Slider = () => {
                  
                 </div>
                 <div className="flex justify-between items-center mt-3">
-                  <button className="btn btn-sm btn-outline border-white text-white">
+                  <NavLink to={"/products?category=furniture"} className="btn btn-sm btn-outline border-white text-white">
                     View Details
-                  </button>
+                  </NavLink>
                 </div>
               </div>
             </div>
@@ -123,9 +124,9 @@ const Slider = () => {
                   <p className="text-sm">Get photo paper as a gift</p>
                 </div>
                 <div className="flex justify-between items-center mt-3">
-                  <button className="btn btn-sm btn-outline border-white text-white">
+                  <NavLink to={"/products?category=beauty"} className="btn btn-sm btn-outline border-white text-white">
                     View Details
-                  </button>
+                  </NavLink>
                 </div>
               </div>
             </div>
